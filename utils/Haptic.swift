@@ -1,3 +1,10 @@
+//
+//  Haptic.swift
+//  HapticTest
+//
+//  Created by Muhammad Rasyad Caesarardhi on 24/04/24.
+//
+
 import CoreHaptics
 
 class Utils {
@@ -13,8 +20,8 @@ class Utils {
             engine = try CHHapticEngine()
             try engine?.start()
 
-            let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
-            let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
+            let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 4)
+            let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 4)
             let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
             let pattern = try CHHapticPattern(events: [event], parameters: [])
             let player = try engine?.makePlayer(with: pattern)
@@ -36,8 +43,21 @@ class Utils {
             runHaptic()
         }
     }
+    
+    static func runHapticOnBackgroundThreadwithinSeconds() {
+        DispatchQueue.global().async {
+            runHaptic()
+            usleep(500000) // Sleep for 0.5 seconds (500,000 microseconds)
+            runHaptic()
+            usleep(500000)
+            runHaptic()
+            usleep(500000)
+            runHaptic()
+        }
+    }
 }
 
 // Example usage:
-// Utils.runHapticOnMainThread() // Dispatches the haptic function to the main thread
-// Utils.runHapticOnBackgroundThread() // Dispatches the haptic function to a background thread
+//Utils.runHapticOnMainThread() // Dispatches the haptic function to the main thread
+//Utils.runHapticOnBackgroundThread() // Dispatches the haptic function to a background thread
+
