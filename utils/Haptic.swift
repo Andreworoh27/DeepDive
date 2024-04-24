@@ -7,7 +7,7 @@
 
 import CoreHaptics
 
-class Utils {
+class HapticUtils {
     static var engine: CHHapticEngine?
 
     static func runHaptic() {
@@ -58,6 +58,6 @@ class Utils {
 }
 
 // Example usage:
-//Utils.runHapticOnMainThread() // Dispatches the haptic function to the main thread
-//Utils.runHapticOnBackgroundThread() // Dispatches the haptic function to a background thread
+//Haptic.runHapticOnMainThread() // Dispatches the haptic function to the main thread
+//Haptic.runHapticOnBackgroundThread() // Dispatches the haptic function to a background thread
 
