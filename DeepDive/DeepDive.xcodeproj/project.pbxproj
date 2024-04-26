@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A02BDB78940033F7FE /* GameScene.swift */; };
+		3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A22BDB793D0033F7FE /* GyroManager.swift */; };
 		AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */; };
 		AC3F16792BDB67BC000C8020 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16782BDB67BC000C8020 /* ContentView.swift */; };
 		AC3F167B2BDB67BE000C8020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC3F167A2BDB67BE000C8020 /* Assets.xcassets */; };
@@ -14,6 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A92D4A02BDB78940033F7FE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		3A92D4A22BDB793D0033F7FE /* GyroManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroManager.swift; sourceTree = "<group>"; };
 		AC3F16732BDB67BC000C8020 /* DeepDive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeepDive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepDiveApp.swift; sourceTree = "<group>"; };
 		AC3F16782BDB67BC000C8020 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,6 +36,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3A92D49F2BDB78870033F7FE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				3A92D4A02BDB78940033F7FE /* GameScene.swift */,
+				3A92D4A22BDB793D0033F7FE /* GyroManager.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		AC3F166A2BDB67BC000C8020 = {
 			isa = PBXGroup;
 			children = (
@@ -51,6 +64,7 @@
 		AC3F16752BDB67BC000C8020 /* DeepDive */ = {
 			isa = PBXGroup;
 			children = (
+				3A92D49F2BDB78870033F7FE /* Utils */,
 				AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */,
 				AC3F16782BDB67BC000C8020 /* ContentView.swift */,
 				AC3F167A2BDB67BE000C8020 /* Assets.xcassets */,
@@ -137,6 +151,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */,
+				3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */,
 				AC3F16792BDB67BC000C8020 /* ContentView.swift in Sources */,
 				AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */,
 			);
@@ -272,6 +288,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DeepDive/Preview Content\"";
+				DEVELOPMENT_TEAM = SW8FY3LA3R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -300,6 +317,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DeepDive/Preview Content\"";
+				DEVELOPMENT_TEAM = SW8FY3LA3R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
