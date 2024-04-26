@@ -14,21 +14,23 @@ struct ContentView: View {
     @State private var gyroInfo: String = "Inactive"
     @State private var isButtonPressed: Bool = false
     
-    var scene: GameScene
+    var gameScene: GameScene
     init(){
-        scene = GameScene()
-        scene.scaleMode = .fill
+        gameScene = GameScene(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
     }
     
     var body: some View {
         VStack {
-            Text("Gyro Status: \(gyroInfo)  \(gyro.x) \(gyro.y)")
-            Text("Player position x: \(scene.player.position.x) y: \(scene.player.position.y)")
-            SpriteView(scene: scene)
+            ZStack{
+//                Text("Gyro Status: \(gyroInfo)  \(gyro.x) \(gyro.y)")
+//                Text("Player position x: \(gameScene.playerNode.position.x) y: \(gameScene.playerNode.position.y)")
+                SpriteView(scene: gameScene)
+            }
         }
+        .ignoresSafeArea()
         .onChange(of: [gyro.x, gyro.y]) {
             checkSideMove()
-            scene.movePlayer(dx: gyro.x, dy: gyro.y)
+            gameScene.movePlayer(dx: gyro.x, dy: gyro.y)
         }
     }
     
