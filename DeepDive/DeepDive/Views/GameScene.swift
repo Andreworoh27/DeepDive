@@ -86,11 +86,19 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        cameraNode.position = CGPoint(x: playerNode.position.x, y: playerNode.position.y)
         // zone checker
         if(playerNode.position.y <= section2LimitNode.position.y && sharkTraps == false){
             sharkTraps = true
             print("Shark Traps on : \(sharkTraps.description)")
+            
+            let intervalDuration = SKAction.wait(forDuration: 3)
+            let addSharkAction = SKAction.run {
+                self.addSharks()
+            }
+            let sequenceAction = SKAction.sequence([intervalDuration, addSharkAction])
+            let repeatAction = SKAction.repeatForever(sequenceAction)
+            self.run(repeatAction)
+
         }
         else if (playerNode.position.y > section2LimitNode.position.y && sharkTraps == true){
             sharkTraps = false
@@ -141,5 +149,48 @@ class GameScene: SKScene {
         }
         
         cameraNode.position = playerNode.position
+    }
+    
+    func addSharks(){
+        let sharkImage = getRandomString()
+        
+        let directionRight = sharkImage.contains("Right") ? true : false
+        
+        let sharkNode = SKSpriteNode(imageNamed: sharkImage)
+        
+        //shark Y coordinate spawn location
+        let sharkYPositon = random(
+            min: (bombTraps ? section3LimitNode.position.y - sharkNode.size.height : section2LimitNode.position.y - sharkNode.size.height),
+            max: bombTraps ? mapBottomSide + sharkNode.size.height : section3LimitNode.position.y + sharkNode.size.height
+        )
+        
+        let sharkXPosition = directionRight ? mapLeftSide - sharkNode.size.width : mapRightSide + sharkNode.size.width
+        
+        sharkNode.position = CGPoint(
+            x: sharkXPosition,
+            y: sharkYPositon)
+        
+        addChild(sharkNode)
+        
+        let sharkSpeed = random(min: CGFloat(8), max: CGFloat(15))
+        
+        
+        let sharkYDestination = random(
+            min: section2LimitNode.position.y - sharkNode.size.height,
+            max: (mapBottomSide + sharkNode.size.height)
+        )
+        
+        // shark movement
+        let actionMove = SKAction.move(
+            to: CGPoint(
+                x: directionRight ? mapRightSide + sharkNode.size.width : mapLeftSide - sharkNode.size.width,
+                y: sharkYDestination
+            ),
+            duration: TimeInterval(sharkSpeed)
+        )
+        let actionDissapear = SKAction.removeFromParent()
+        
+        sharkNode.run(SKAction.sequence([actionMove,actionDissapear]))
+        
     }
 }
