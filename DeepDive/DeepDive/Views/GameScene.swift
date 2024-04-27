@@ -107,7 +107,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        // zone checker
+        //zone checker for section 1
+        if(playerNode.position.y > section2LimitNode.position.y){
+            // count oxigen
+            oxigenSection1()
+        }
+
+        // zone checker for section 2
         if(playerNode.position.y <= section2LimitNode.position.y && sharkTraps == false){
             sharkTraps = true
             print("Shark Traps on : \(sharkTraps.description)")
@@ -119,16 +125,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let sequenceAction = SKAction.sequence([intervalDuration, addSharkAction])
             let repeatAction = SKAction.repeatForever(sequenceAction)
             self.run(repeatAction)
-
+            
+            // count oxigen
+            oxigenSection2()
         }
         else if (playerNode.position.y > section2LimitNode.position.y && sharkTraps == true){
             sharkTraps = false
             print("Shark Traps off : \(sharkTraps.description)")
         }
         
+        // zone checker for section 3
+
         if(playerNode.position.y <= section3LimitNode.position.y && bombTraps == false){
             bombTraps = true
             print("Bomb Traps on : \(bombTraps.description)")
+            
+            let addBombAction = SKAction.run {
+                self.addBombs()
+            }
+            
+            let repeatAction = SKAction.repeat(addBombAction, count: 10)
+            self.run(repeatAction)
+
+            // count oxigen
+            oxigenSection3()
         }
         else if(playerNode.position.y > section3LimitNode.position.y && bombTraps == true){
             bombTraps = false
@@ -215,6 +235,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let actionDissapear = SKAction.removeFromParent()
         
         sharkNode.run(SKAction.sequence([actionMove,actionDissapear]))
+        
+    }
+    
+    func addBombs(){
+        let bombNode = SKSpriteNode(imageNamed: bomb)
+        
+        let bombYPosition = random(
+            min: section3LimitNode.position.y - bombNode.size.height,
+            max: mapBottomSide + bombNode.size.height)
+        
+        let bombXPosition  = random(
+            min: mapLeftSide + bombNode.size.width,
+            max: mapRightSide - bombNode.size.width)
+        
+        bombNode.position = CGPoint(
+            x : bombXPosition,
+            y : bombYPosition)
+        
+        addChild(bombNode)
+    }
+    
+    // for counting oxigen decreasse in section 1
+    func oxigenSection1(){
+    }
+    
+    // for counting oxigen decreasse in section 2
+    func oxigenSection2(){
+        
+    }
+    
+    // for counting oxigen decreasse in section 3
+    func oxigenSection3(){
         
     }
 }
