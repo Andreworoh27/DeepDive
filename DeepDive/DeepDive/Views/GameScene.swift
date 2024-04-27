@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var sharkTraps : Bool = false
     var bombTraps : Bool = false
+    var sharkInSection2 : Bool = true
     
     func initializeObjects(){
         //testing nodes
@@ -111,6 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(playerNode.position.y > section2LimitNode.position.y){
             // turn on shark trap
             if(!sharkTraps){
+                sharkInSection2 = true
                 sharkTraps = true
                 print("Shark Traps on : \(sharkTraps.description)")
                 
@@ -135,16 +137,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // zone checker for section 2
-        if(playerNode.position.y <= section2LimitNode.position.y && bombTraps == false){
-            bombTraps = true
-            print("Bomb Traps on : \(bombTraps.description)")
-            
-            let addBombAction = SKAction.run {
-                self.addBombs()
+        if(playerNode.position.y <= section2LimitNode.position.y){
+            sharkInSection2 = true
+            if(!bombTraps){
+                // turn on bomb trap
+                bombTraps = true
+                print("Bomb Traps on : \(bombTraps.description)")
+                
+                let addBombAction = SKAction.run {
+                    self.addBombs()
+                }
+                
+                let repeatAction = SKAction.repeat(addBombAction, count: 10)
+                self.run(repeatAction)
             }
-            
-            let repeatAction = SKAction.repeat(addBombAction, count: 10)
-            self.run(repeatAction)
             
             // count oxigen
             oxigenSection2()
@@ -158,11 +164,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // zone checker for section 3
         if(playerNode.position.y <= section3LimitNode.position.y){
+            sharkInSection2 = false
+            
             // count oxigen
             oxigenSection3()
         }
         else if(playerNode.position.y > section3LimitNode.position.y){
-            
+
         }
         
         movePlayer(dx: gyro.x, dy: gyro.y)
@@ -214,8 +222,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //shark Y coordinate spawn location
         let sharkYPositon = random(
-            min: (bombTraps ? section3LimitNode.position.y - sharkNode.size.height : section2LimitNode.position.y - sharkNode.size.height),
-            max: bombTraps ? mapBottomSide + sharkNode.size.height : section3LimitNode.position.y + sharkNode.size.height
+            min: sharkInSection2 ? section2LimitNode.position.y - sharkNode.size.height : section3LimitNode.position.y - sharkNode.size.height,
+            max: sharkInSection2 ? section3LimitNode.position.y + sharkNode.size.height : mapBottomSide + sharkNode.size.height
         )
         
         let sharkXPosition = directionRight ? mapLeftSide - sharkNode.size.width : mapRightSide + sharkNode.size.width
