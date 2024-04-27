@@ -15,6 +15,7 @@
 		AC3F167E2BDB67BE000C8020 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC3F167D2BDB67BE000C8020 /* Preview Assets.xcassets */; };
 		AC4714012BDC0D9F007CD871 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4714002BDC0D9F007CD871 /* Constant.swift */; };
 		AC4714092BDCE4CD007CD871 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4714082BDCE4CD007CD871 /* Utility.swift */; };
+		ACD8979B2BDD4E7A001F4D06 /* CollisionObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD8979A2BDD4E7A001F4D06 /* CollisionObjects.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		AC3F167D2BDB67BE000C8020 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC4714002BDC0D9F007CD871 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		AC4714082BDCE4CD007CD871 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		ACD8979A2BDD4E7A001F4D06 /* CollisionObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionObjects.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 			children = (
 				AC3F16782BDB67BC000C8020 /* ContentView.swift */,
 				3A92D4A02BDB78940033F7FE /* GameScene.swift */,
+				ACD8979A2BDD4E7A001F4D06 /* CollisionObjects.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 			files = (
 				3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */,
 				3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */,
+				ACD8979B2BDD4E7A001F4D06 /* CollisionObjects.swift in Sources */,
 				AC4714092BDCE4CD007CD871 /* Utility.swift in Sources */,
 				AC4714012BDC0D9F007CD871 /* Constant.swift in Sources */,
 				AC3F16792BDB67BC000C8020 /* ContentView.swift in Sources */,

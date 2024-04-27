@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene{
     
     var sceneWidth : SKLabelNode!
     var sceneHeight :SKLabelNode!
@@ -47,7 +47,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
         playerNode.position = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
         //        playerNode.position = CGPoint(x: 0, y: 0)
-        
+        //setup player physics
+        playerNode.physicsBody = SKPhysicsBody(rectangleOf: playerNode.size)
+        playerNode.physicsBody?.isDynamic = true
+        playerNode.physicsBody?.categoryBitMask = PhysicsCategory.player
+        playerNode.physicsBody?.contactTestBitMask = PhysicsCategory.shark | PhysicsCategory.bomb
+        playerNode.physicsBody?.collisionBitMask = PhysicsCategory.shark
+        playerNode.physicsBody?.usesPreciseCollisionDetection = true
         
         cameraNode = SKCameraNode()
         cameraNode.position = CGPoint(x: playerNode.position.x, y: playerNode.position.y)
@@ -83,21 +89,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func didBegin(_ contact: SKPhysicsContact) {
-        if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 2 {
-            // Player collided with the border
-            let player = contact.bodyA.node as! SKSpriteNode
-            let border = contact.bodyB.node as! SKSpriteNode
-            player.position = (scene?.convert(player.position, from: border))!
-        }
-    }
-    
     override func didMove(to view: SKView) {
         initializeObjects()
         self.camera = cameraNode
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
         self.physicsWorld.contactDelegate = self
         backgroundColor = SKColor.blueSky
+        
+        // set physics for the map
+        physicsWorld.gravity = .zero
+        physicsWorld.contactDelegate = self
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -116,6 +117,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 sharkTraps = true
                 print("Shark Traps on : \(sharkTraps.description)")
                 
+                // define shark spawn interval
                 let intervalDuration = SKAction.wait(forDuration: 3)
                 let addSharkAction = SKAction.run {
                     self.addSharks()
@@ -232,6 +234,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: sharkXPosition,
             y: sharkYPositon)
         
+        //setup shark physics
+        sharkNode.physicsBody = SKPhysicsBody(rectangleOf: sharkNode.size) // 1
+        sharkNode.physicsBody?.isDynamic = true // 2
+        sharkNode.physicsBody?.categoryBitMask = PhysicsCategory.shark // 3
+        sharkNode.physicsBody?.contactTestBitMask = PhysicsCategory.player // 4
+        sharkNode.physicsBody?.collisionBitMask = PhysicsCategory.player // 5
+        
         addChild(sharkNode)
         
         let sharkSpeed = random(min: CGFloat(8), max: CGFloat(15))
@@ -271,6 +280,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x : bombXPosition,
             y : bombYPosition)
         
+        //setup player physics
+        bombNode.physicsBody = SKPhysicsBody(rectangleOf: bombNode.size)
+        bombNode.physicsBody?.isDynamic = true
+        bombNode.physicsBody?.categoryBitMask = PhysicsCategory.bomb
+        bombNode.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        bombNode.physicsBody?.collisionBitMask = PhysicsCategory.none
+        
         addChild(bombNode)
     }
     
@@ -301,4 +317,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func oxigenSection3(){
         
     }
+    
+    func playerCollideWithObject(player: SKSpriteNode, object: SKSpriteNode) {
+        if object.name == "Bomb"{
+            object.removeFromParent()
+            print("Hit Bomb")
+            
+            // logic when hit bomb
+            
+        }
+        else if object.name == "Shark"{
+            print("Hit Shark")
+            
+            // logic when hit shark
+            
+        }
+    }
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        // get collided objects
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        // define the collided object
+        if ((firstBody.categoryBitMask & PhysicsCategory.player != 0) &&
+            (secondBody.categoryBitMask & PhysicsCategory.player == 0)) {
+            if let player = firstBody.node as? SKSpriteNode,
+               let object = secondBody.node as? SKSpriteNode {
+                playerCollideWithObject(player: player, object: object)
+            }
+        }
+    }
+    
 }
