@@ -109,34 +109,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         //zone checker for section 1
         if(playerNode.position.y > section2LimitNode.position.y){
+            // turn on shark trap
+            if(!sharkTraps){
+                sharkTraps = true
+                print("Shark Traps on : \(sharkTraps.description)")
+                
+                let intervalDuration = SKAction.wait(forDuration: 3)
+                let addSharkAction = SKAction.run {
+                    self.addSharks()
+                }
+                let sequenceAction = SKAction.sequence([intervalDuration, addSharkAction])
+                let repeatAction = SKAction.repeatForever(sequenceAction)
+                self.run(repeatAction, withKey: "SharkSpawnAction")
+            }
+            
+            // turn of bomb trap
+            if(bombTraps){
+                bombTraps = false
+                print("Bomb Traps off : \(bombTraps.description)")
+                removeBombsFromSection3()
+            }
+            
             // count oxigen
             oxigenSection1()
         }
-
-        // zone checker for section 2
-        if(playerNode.position.y <= section2LimitNode.position.y && sharkTraps == false){
-            sharkTraps = true
-            print("Shark Traps on : \(sharkTraps.description)")
-            
-            let intervalDuration = SKAction.wait(forDuration: 3)
-            let addSharkAction = SKAction.run {
-                self.addSharks()
-            }
-            let sequenceAction = SKAction.sequence([intervalDuration, addSharkAction])
-            let repeatAction = SKAction.repeatForever(sequenceAction)
-            self.run(repeatAction)
-            
-            // count oxigen
-            oxigenSection2()
-        }
-        else if (playerNode.position.y > section2LimitNode.position.y && sharkTraps == true){
-            sharkTraps = false
-            print("Shark Traps off : \(sharkTraps.description)")
-        }
         
-        // zone checker for section 3
-
-        if(playerNode.position.y <= section3LimitNode.position.y && bombTraps == false){
+        // zone checker for section 2
+        if(playerNode.position.y <= section2LimitNode.position.y && bombTraps == false){
             bombTraps = true
             print("Bomb Traps on : \(bombTraps.description)")
             
@@ -146,13 +145,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let repeatAction = SKAction.repeat(addBombAction, count: 10)
             self.run(repeatAction)
-
+            
+            // count oxigen
+            oxigenSection2()
+        }
+        else if (playerNode.position.y > section2LimitNode.position.y){
+////            turn off shark trap
+//            sharkTraps = false
+//            print("Shark Traps off : \(sharkTraps.description)")
+//            self.removeAction(forKey: "SharkSpawnAction")
+        }
+        
+        // zone checker for section 3
+        if(playerNode.position.y <= section3LimitNode.position.y){
             // count oxigen
             oxigenSection3()
         }
-        else if(playerNode.position.y > section3LimitNode.position.y && bombTraps == true){
-            bombTraps = false
-            print("Bomb Traps off : \(bombTraps.description)")
+        else if(playerNode.position.y > section3LimitNode.position.y){
+            
         }
         
         movePlayer(dx: gyro.x, dy: gyro.y)
@@ -254,6 +264,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y : bombYPosition)
         
         addChild(bombNode)
+    }
+    
+    
+    func removeBombsFromSection3() {
+        // Iterate through all child nodes
+        for node in self.children {
+            // Check if the node is a bomb and located in section 3
+            if let bombNode = node as? SKSpriteNode, bombNode.name == "Bomb" {
+                if bombNode.position.y <= section3LimitNode.position.y {
+                    // Remove the bomb from the scene
+                    bombNode.removeFromParent()
+                }
+            }
+        }
     }
     
     // for counting oxigen decreasse in section 1
