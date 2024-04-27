@@ -28,10 +28,6 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
-        .onChange(of: [gyro.x, gyro.y]) {
-            checkSideMove()
-            gameScene.movePlayer(dx: gyro.x, dy: gyro.y)
-        }
     }
     
     func checkSideMove(){

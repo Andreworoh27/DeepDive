@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var sceneWidth : SKLabelNode!
     var sceneHeight :SKLabelNode!
@@ -20,6 +20,7 @@ class GameScene: SKScene {
     var mapDivider : SKSpriteNode!
     var xLimiter : SKSpriteNode!
     var yLimiter : SKSpriteNode!
+    var gyro = GyroManager.shared
 
     var sharkTraps : Bool = false
     var bombTraps : Bool = false
@@ -39,6 +40,8 @@ class GameScene: SKScene {
         // map nodes
         mapNode = SKSpriteNode(texture: SKTexture(imageNamed: "Map"))
         mapNode.position = CGPoint(x: 0, y: 0)
+        mapNode.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
+        mapNode.physicsBody?.contactTestBitMask = 1
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
         playerNode.position = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
@@ -79,10 +82,28 @@ class GameScene: SKScene {
         
     }
     
+    func didBegin(_ contact: SKPhysicsContact) {
+        if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 2 {
+            // Player collided with the border
+            let player = contact.bodyA.node as! SKSpriteNode
+            let border = contact.bodyB.node as! SKSpriteNode
+            player.position = (scene?.convert(player.position, from: border))!
+        }
+    }
+    
     override func didMove(to view: SKView) {
         initializeObjects()
         self.camera = cameraNode
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
+        self.physicsWorld.contactDelegate = self
         backgroundColor = SKColor.blueSky
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        
+        self.movePlayer(dx: location.x, dy: location.y)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -113,26 +134,29 @@ class GameScene: SKScene {
             bombTraps = false
             print("Bomb Traps off : \(bombTraps.description)")
         }
+        
+        movePlayer(dx: gyro.x, dy: gyro.y)
     }
     
     func movePlayer(dx: CGFloat, dy: CGFloat) {
         // limit gyro movement so that it won't move very fast
         var movementX = dx
-        if movementX < -1 {
-            movementX = -0.9
-        } else if movementX > 1 {
-            movementX = 0.9
+        if movementX < -0.5 {
+            movementX = -0.5
+        } else if movementX > 0.5 {
+            movementX = 0.5
         }
         
         var movementY = dy
-        if movementY < -1 {
-            movementY = -0.9
-        } else if movementY > 1 {
-            movementY = 0.9
+        if movementY < 0 {
+            movementY *= 3
+        }
+        else if movementY > 0.3 {
+            movementY = 0.3
         }
         
         // calculate movement speed
-        let movementFactor: CGFloat = 50 // adjust this factor to control the movement speed
+        let movementFactor: CGFloat = 10 // adjust this factor to control the movement speed
         let movementXDistance = movementX * movementFactor
         let movementYDistance = movementY * movementFactor * -1
         
@@ -140,11 +164,11 @@ class GameScene: SKScene {
         let newY = playerNode.position.y + movementYDistance
         
         // conditional to check so that the player won't go over boundary of the map
-        if newX + playerNode.size.width / 2 <= frame.maxX && newX - playerNode.size.width / 2 >= frame.minX {
+        if newX + playerNode.size.width / 2 <= mapNode.frame.maxX && newX - playerNode.size.width / 2 >= mapNode.frame.minX {
             playerNode.position.x = newX
         }
         
-        if newY + playerNode.size.height / 2 <= frame.maxY && newY - playerNode.size.height / 2 >= frame.minY {
+        if newY + playerNode.size.height / 2 <= mapNode.frame.maxY && newY - playerNode.size.height / 2 >= mapNode.frame.minY {
             playerNode.position.y = newY
         }
         
