@@ -268,6 +268,8 @@ class GameScene: SKScene{
     func addBombs(){
         let bombNode = SKSpriteNode(imageNamed: bomb)
         
+        bombNode.name = "Bomb"
+        
         let bombYPosition = random(
             min: section3LimitNode.position.y - bombNode.size.height,
             max: mapBottomSide + bombNode.size.height)
