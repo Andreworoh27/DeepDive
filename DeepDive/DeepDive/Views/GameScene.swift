@@ -20,6 +20,15 @@ class GameScene: SKScene{
     var mapDivider : SKSpriteNode!
     var xLimiter : SKSpriteNode!
     var yLimiter : SKSpriteNode!
+    
+    var oxygenBarNode: SKSpriteNode!
+    var currentOxygenLevel: CGFloat!
+    var maxOxygenLevel: CGFloat!
+    var oxygenDecreaseInterval: CGFloat!
+    var lastSavedOxygenTime: TimeInterval!
+    
+    var initLocation: CGPoint!
+    
     var gyro = GyroManager.shared
 
     var sharkTraps : Bool = false
@@ -37,15 +46,17 @@ class GameScene: SKScene{
         addChild(sceneWidth)
         addChild(sceneHeight)
         
-        
         // map nodes
         mapNode = SKSpriteNode(texture: SKTexture(imageNamed: "Map"))
         mapNode.position = CGPoint(x: 0, y: 0)
         mapNode.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
         mapNode.physicsBody?.contactTestBitMask = 1
         
+        // init Starting Location
+        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+        
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
-        playerNode.position = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+        playerNode.position = initLocation
         //        playerNode.position = CGPoint(x: 0, y: 0)
         //setup player physics
         playerNode.physicsBody = SKPhysicsBody(rectangleOf: playerNode.size)
@@ -73,6 +84,8 @@ class GameScene: SKScene{
         
         yLimiter = SKSpriteNode(color: UIColor.cyan, size: CGSize(width: 10, height: mapNode.size.height))
         yLimiter.position = CGPoint(x: 0, y: 0)
+        
+        initOxygen()
         
         addChild(mapNode)
         addChild(playerNode)
@@ -109,6 +122,8 @@ class GameScene: SKScene{
     }
     
     override func update(_ currentTime: TimeInterval) {
+        decreaseOxygen(currentTime)
+        
         //zone checker for section 1
         if(playerNode.position.y > section2LimitNode.position.y){
             // turn on shark trap
@@ -118,7 +133,7 @@ class GameScene: SKScene{
                 print("Shark Traps on : \(sharkTraps.description)")
                 
                 // define shark spawn interval
-                let intervalDuration = SKAction.wait(forDuration: 3)
+                let intervalDuration = SKAction.wait(forDuration: 1.5)
                 let addSharkAction = SKAction.run {
                     self.addSharks()
                 }
@@ -150,7 +165,7 @@ class GameScene: SKScene{
                     self.addBombs()
                 }
                 
-                let repeatAction = SKAction.repeat(addBombAction, count: 10)
+                let repeatAction = SKAction.repeat(addBombAction, count: 30)
                 self.run(repeatAction)
             }
             
@@ -221,6 +236,7 @@ class GameScene: SKScene{
         let directionRight = sharkImage.contains("Right") ? true : false
         
         let sharkNode = SKSpriteNode(imageNamed: sharkImage)
+        sharkNode.name = "Shark"
         
         //shark Y coordinate spawn location
         let sharkYPositon = random(
@@ -243,7 +259,7 @@ class GameScene: SKScene{
         
         addChild(sharkNode)
         
-        let sharkSpeed = random(min: CGFloat(8), max: CGFloat(15))
+        let sharkSpeed = random(min: CGFloat(5), max: CGFloat(10))
         
         
         let sharkYDestination = random(
@@ -308,16 +324,18 @@ class GameScene: SKScene{
     
     // for counting oxigen decreasse in section 1
     func oxigenSection1(){
+        oxygenDecreaseInterval = 1.5
     }
     
     // for counting oxigen decreasse in section 2
     func oxigenSection2(){
-        
+        oxygenDecreaseInterval = 1
+
     }
     
     // for counting oxigen decreasse in section 3
     func oxigenSection3(){
-        
+        oxygenDecreaseInterval = 0.5
     }
     
     func playerCollideWithObject(player: SKSpriteNode, object: SKSpriteNode) {
@@ -326,14 +344,16 @@ class GameScene: SKScene{
             print("Hit Bomb")
             
             // logic when hit bomb
-            
+            currentOxygenLevel -= 50
         }
         else if object.name == "Shark"{
             print("Hit Shark")
             
             // logic when hit shark
-            
+            currentOxygenLevel -= 25
         }
+        
+        animateGettingHurt()
     }
 }
 
@@ -358,6 +378,68 @@ extension GameScene: SKPhysicsContactDelegate {
                 playerCollideWithObject(player: player, object: object)
             }
         }
+    }
+    
+    func initOxygen(){
+        currentOxygenLevel = 100
+        maxOxygenLevel = 100
+        oxygenDecreaseInterval = 2
+    }
+
+    func decreaseOxygen(_ currentTime: TimeInterval){
+        if currentOxygenLevel <= 0 {
+            throwGameOverEvent()
+        }
+        
+        if lastSavedOxygenTime == nil {
+            lastSavedOxygenTime = currentTime
+        }
+        else {
+            if abs(lastSavedOxygenTime - currentTime) >= oxygenDecreaseInterval {
+                if currentOxygenLevel > 0 {
+                    currentOxygenLevel -= 1
+                    lastSavedOxygenTime = nil
+                }
+//                else {
+//                    oxygenBarNode.removeFromParent()
+//                }
+//
+//                oxygenBarNode.size = CGSize(width: oxygenBarNode.size.width, height: currentOxygenLevel)
+//                if(currentOxygenLevel <= 100 && currentOxygenLevel > 75){
+//                    oxygenBarNode.color = UIColor.green
+//                }
+//                else if(currentOxygenLevel <= 75 && currentOxygenLevel > 50){
+//                    oxygenBarNode.color = UIColor.yellow
+//                }
+//                else if(currentOxygenLevel <= 50 && currentOxygenLevel > 25){
+//                    oxygenBarNode.color = UIColor.orange
+//                }
+//                else if(currentOxygenLevel <= 25){
+//                    oxygenBarNode.color = UIColor.red
+//                }
+                print("Oxygen decreased: \(currentOxygenLevel ?? -1)")
+            }
+        }
+    }
+    
+    func animateGettingHurt(){
+        let delayAction = SKAction.wait(forDuration: 0.1)
+        let animation1 = SKAction.run {
+            self.playerNode.color = .red
+            self.playerNode.setScale(1.1)
+        }
+        let animation2 = SKAction.run {
+            self.playerNode.setScale(1)
+            self.playerNode.color = .gray
+        }
+        let sequenceAction = SKAction.sequence([animation1, delayAction, animation2])
+        playerNode.run(sequenceAction)
+    }
+    
+    func throwGameOverEvent(){
+        playerNode.position = initLocation
+        playerNode.zRotation = 0
+        currentOxygenLevel = 100
     }
     
 }
