@@ -9,8 +9,8 @@ import SwiftUI
 
 struct StoryView: View {
     @State private var sunOpacity = 0.0
-       @State private var cloudOpacity = 0.0
-       @State private var moonOpacity = 0.0
+    @State private var cloudOpacity = 0.0
+    @State private var moonOpacity = 0.0
     
     let animationDuration: Double = 3
     
