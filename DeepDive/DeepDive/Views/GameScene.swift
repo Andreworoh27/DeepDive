@@ -125,7 +125,7 @@ class GameScene: SKScene{
     }
     
     override func update(_ currentTime: TimeInterval) {
-        runHapticOnBackgroundScene(currentTime)
+//        runHapticOnBackgroundScene(currentTime)
         decreaseOxygen(currentTime)
         
         //zone checker for section 1
@@ -247,6 +247,7 @@ class GameScene: SKScene{
         
         addChild(bubbleNode)
         bubbleNode.run(SKAction.sequence([intervalDuration, actionDissapear]))
+        HapticUtils.runHapticOnBackgroundThread()
     }
     
     func addSharks(){
