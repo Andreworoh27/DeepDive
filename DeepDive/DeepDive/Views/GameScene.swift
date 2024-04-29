@@ -125,7 +125,9 @@ class GameScene: SKScene{
     }
     
     override func update(_ currentTime: TimeInterval) {
+        runHapticOnBackgroundScene(currentTime)
         decreaseOxygen(currentTime)
+        
         
         //zone checker for section 1
         if(playerNode.position.y > section2LimitNode.position.y){
