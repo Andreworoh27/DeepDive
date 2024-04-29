@@ -60,7 +60,6 @@ class GameScene: SKScene{
         // init Starting Location
 //        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
         initLocation = CGPoint(x: 0, y: mapNode.position.y)
-
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
         playerNode.position = initLocation
@@ -164,7 +163,12 @@ class GameScene: SKScene{
         // zone checker for section 2
         if(playerNode.position.y <= section2LimitNode.position.y){
             sharkInSection2 = true
-            if(!bombTraps){
+            if(!portalSpawn) {
+                spawnPortal()
+                portalSpawn = true
+            }
+            
+            if(!bombTraps && portalSpawn){
                 // turn on bomb trap
                 bombTraps = true
 //                print("Bomb Traps on : \(bombTraps.description)")
@@ -176,11 +180,6 @@ class GameScene: SKScene{
                 let repeatAction = SKAction.repeat(addBombAction, count: 30)
                 self.run(repeatAction)
                 
-            }
-            
-            if(portalSpawn == false && bombCount == 30) {
-                spawnPortal()
-                portalSpawn = true
             }
             
             // count oxigen
@@ -328,6 +327,20 @@ class GameScene: SKScene{
             x : bombXPosition,
             y : bombYPosition)
         
+        while(isBombInPortalFrame(portalNode: portalNode, bombNode: bombNode)){
+            let bombYPosition = random(
+                min: section3LimitNode.position.y - bombNode.size.height,
+                max: mapBottomSide + bombNode.size.height)
+            
+            let bombXPosition  = random(
+                min: mapLeftSide + bombNode.size.width,
+                max: mapRightSide - bombNode.size.width)
+            
+            bombNode.position = CGPoint(
+                x : bombXPosition,
+                y : bombYPosition)
+        }
+        
         //setup player physics
         bombNode.physicsBody = SKPhysicsBody(rectangleOf: bombNode.size)
         bombNode.physicsBody?.isDynamic = true
@@ -401,36 +414,8 @@ class GameScene: SKScene{
         portalNode = SKSpriteNode(imageNamed: "Portal 1")
         portalNode.size = CGSize(width: 350, height: 450)
         
-        var portalPosition = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
-        portalNode.position = portalPosition
+        portalNode.position = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
         
-        var locationValid = false
-        var countValid = 0
-        
-        while(!locationValid){
-            countValid = 0
-
-            for node in self.children {
-                // Check if the node is a bomb and located in section 3
-                if let bombNode = node as? SKSpriteNode, bombNode.name == "Bomb" {
-//                    print("Portal position : \(portalPosition)")
-//                    print("Bomb Positon : \(bombNode.position)")
-                    if isBombInPortalFrame(portalNode: portalNode, bombNode: bombNode){
-//                        print("trigger")
-                        countValid += 1
-                    }
-                }
-            }
-            if(countValid == 0){
-                locationValid = true
-            }
-            else{
-                portalPosition = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
-                portalNode.position = portalPosition
-            }
-        }
-        
-        portalNode.position = portalPosition
         addChild(portalNode)
         
         // Create an array to hold SKTexture objects
