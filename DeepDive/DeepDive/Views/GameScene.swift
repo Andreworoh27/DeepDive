@@ -26,7 +26,7 @@ class GameScene: SKScene{
     var gyro = GyroManager.shared
     
     var oxygenBarNode: SKSpriteNode!
-    var currentOxygenLevel: CGFloat!
+    @Published var currentOxygenLevel: CGFloat!
     var maxOxygenLevel: CGFloat!
     var oxygenDecreaseInterval: CGFloat!
     var lastSavedOxygenTime: TimeInterval!
@@ -57,7 +57,7 @@ class GameScene: SKScene{
         
         // init Starting Location
         initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
-        initLocation = CGPoint(x: 0, y: mapNode.position.y)
+//        initLocation = CGPoint(x: 0, y: mapNode.position.y)
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
         playerNode.position = initLocation
@@ -72,7 +72,7 @@ class GameScene: SKScene{
         
         cameraNode = SKCameraNode()
         cameraNode.position = CGPoint(x: playerNode.position.x, y: playerNode.position.y)
-        cameraNode.setScale(8)
+        cameraNode.setScale(1.5)
         
         section2LimitNode = SKSpriteNode(color: UIColor.red, size: CGSize(width: mapNode.size.width, height: 10))
         section2LimitNode.position = CGPoint(x: 0, y: section2)
@@ -202,8 +202,10 @@ class GameScene: SKScene{
         
         movePlayer(dx: gyro.x, dy: gyro.y)
         
-        if(isInPortalFrame(portalNode: portalNode, objectNode: playerNode)){
-            print("Player Inside Portal")
+        if portalNode != nil {
+            if(isInPortalFrame(portalNode: portalNode, objectNode: playerNode)){
+                print("Player Inside Portal")
+            }
         }
     }
     
