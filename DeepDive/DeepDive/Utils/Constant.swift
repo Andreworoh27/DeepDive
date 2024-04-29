@@ -23,3 +23,5 @@ let sharkRight1 = "Shark Right 1"
 let sharkRight2 = "Shark Right 2"
 let sharkLeft = "Shark Left"
 let bomb = "Bomb"
+
+let portalImage = ["Portal 1","Portal 2", "Portal 3", "Portal 4", "Portal 5", "Portal 6", "Portal 7","Portal 8", "Portal 9"]

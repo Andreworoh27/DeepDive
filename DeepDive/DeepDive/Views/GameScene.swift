@@ -20,6 +20,10 @@ class GameScene: SKScene{
     var mapDivider : SKSpriteNode!
     var xLimiter : SKSpriteNode!
     var yLimiter : SKSpriteNode!
+    var portalNode : SKSpriteNode!
+    
+    var initLocation: CGPoint!
+    var gyro = GyroManager.shared
     
     var oxygenBarNode: SKSpriteNode!
     var currentOxygenLevel: CGFloat!
@@ -28,15 +32,13 @@ class GameScene: SKScene{
     var lastSavedOxygenTime: TimeInterval!
     
     var lastHapticTime: TimeInterval!
-    var intervalHapticDelay: CGFloat!
+        var intervalHapticDelay: CGFloat!
     
-    var initLocation: CGPoint!
-    
-    var gyro = GyroManager.shared
-
     var sharkTraps : Bool = false
     var bombTraps : Bool = false
     var sharkInSection2 : Bool = true
+    var portalSpawn : Bool = false
+    var bombCount : Int = 0
     
     func initializeObjects(){
         //testing nodes
@@ -56,7 +58,9 @@ class GameScene: SKScene{
         mapNode.physicsBody?.contactTestBitMask = 1
         
         // init Starting Location
-        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+//        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+        initLocation = CGPoint(x: 0, y: mapNode.position.y)
+
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
         playerNode.position = initLocation
@@ -71,7 +75,7 @@ class GameScene: SKScene{
         
         cameraNode = SKCameraNode()
         cameraNode.position = CGPoint(x: playerNode.position.x, y: playerNode.position.y)
-        cameraNode.setScale(1.5)
+        cameraNode.setScale(8)
         
         section2LimitNode = SKSpriteNode(color: UIColor.red, size: CGSize(width: mapNode.size.width, height: 10))
         section2LimitNode.position = CGPoint(x: 0, y: section2)
@@ -134,7 +138,7 @@ class GameScene: SKScene{
             if(!sharkTraps){
                 sharkInSection2 = true
                 sharkTraps = true
-                print("Shark Traps on : \(sharkTraps.description)")
+//                print("Shark Traps on : \(sharkTraps.description)")
                 
                 // define shark spawn interval
                 let intervalDuration = SKAction.wait(forDuration: 1.5)
@@ -149,7 +153,7 @@ class GameScene: SKScene{
             // turn of bomb trap
             if(bombTraps){
                 bombTraps = false
-                print("Bomb Traps off : \(bombTraps.description)")
+//                print("Bomb Traps off : \(bombTraps.description)")
                 removeBombsFromSection3()
             }
             
@@ -163,7 +167,7 @@ class GameScene: SKScene{
             if(!bombTraps){
                 // turn on bomb trap
                 bombTraps = true
-                print("Bomb Traps on : \(bombTraps.description)")
+//                print("Bomb Traps on : \(bombTraps.description)")
                 
                 let addBombAction = SKAction.run {
                     self.addBombs()
@@ -171,6 +175,12 @@ class GameScene: SKScene{
                 
                 let repeatAction = SKAction.repeat(addBombAction, count: 30)
                 self.run(repeatAction)
+                
+            }
+            
+            if(portalSpawn == false && bombCount == 30) {
+                spawnPortal()
+                portalSpawn = true
             }
             
             // count oxigen
@@ -325,6 +335,7 @@ class GameScene: SKScene{
         bombNode.physicsBody?.contactTestBitMask = PhysicsCategory.player
         bombNode.physicsBody?.collisionBitMask = PhysicsCategory.none
         
+        bombCount += 1
         addChild(bombNode)
     }
     
@@ -340,6 +351,7 @@ class GameScene: SKScene{
                 }
             }
         }
+        bombCount = 0
     }
     
     // for counting oxigen decreasse in section 1
@@ -364,14 +376,15 @@ class GameScene: SKScene{
     func playerCollideWithObject(player: SKSpriteNode, object: SKSpriteNode) {
         if object.name == "Bomb"{
             object.removeFromParent()
-            print("Hit Bomb")
+//            print("Hit Bomb")
+            bombCount -= 1
             
             // logic when hit bomb
             HapticUtils.runHapticOnHitBomb()
             currentOxygenLevel -= 50
         }
         else if object.name == "Shark"{
-            print("Hit Shark")
+//            print("Hit Shark")
             
             // logic when hit shark
             HapticUtils.runHapticOnHitShark()
@@ -380,6 +393,60 @@ class GameScene: SKScene{
         
         animateGettingHurt()
         
+    }
+    
+    func spawnPortal(){
+//        print("trigger spawn portal")
+        // Create the portal node
+        portalNode = SKSpriteNode(imageNamed: "Portal 1")
+        portalNode.size = CGSize(width: 350, height: 450)
+        
+        var portalPosition = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
+        portalNode.position = portalPosition
+        
+        var locationValid = false
+        var countValid = 0
+        
+        while(!locationValid){
+            countValid = 0
+
+            for node in self.children {
+                // Check if the node is a bomb and located in section 3
+                if let bombNode = node as? SKSpriteNode, bombNode.name == "Bomb" {
+//                    print("Portal position : \(portalPosition)")
+//                    print("Bomb Positon : \(bombNode.position)")
+                    if isBombInPortalFrame(portalNode: portalNode, bombNode: bombNode){
+//                        print("trigger")
+                        countValid += 1
+                    }
+                }
+            }
+            if(countValid == 0){
+                locationValid = true
+            }
+            else{
+                portalPosition = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
+                portalNode.position = portalPosition
+            }
+        }
+        
+        portalNode.position = portalPosition
+        addChild(portalNode)
+        
+        // Create an array to hold SKTexture objects
+        var portalTextures: [SKTexture] = []
+        
+        // Iterate over the array of image names and load them into SKTexture objects
+        for imageName in portalImage {
+            let texture = SKTexture(imageNamed: imageName)
+            portalTextures.append(texture)
+        }
+        
+        // Create an animation action
+        let animatePortalAction = SKAction.animate(with: portalTextures, timePerFrame: 0.1)
+        
+        // Apply the animation to the portal node
+        portalNode.run(SKAction.repeatForever(animatePortalAction),withKey: "PortalAnimation")
     }
 }
 
@@ -458,7 +525,7 @@ extension GameScene: SKPhysicsContactDelegate {
 //                else if(currentOxygenLevel <= 25){
 //                    oxygenBarNode.color = UIColor.red
 //                }
-                print("Oxygen decreased: \(currentOxygenLevel ?? -1)")
+//                print("Oxygen decreased: \(currentOxygenLevel ?? -1)")
             }
         }
     }

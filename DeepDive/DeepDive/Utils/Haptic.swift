@@ -13,7 +13,7 @@ class HapticUtils {
 
     static func runHaptic() {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
-            print("Device does not support haptics")
+//            print("Device does not support haptics")
             return
         }
 
@@ -29,7 +29,7 @@ class HapticUtils {
 
             try player?.start(atTime: CHHapticTimeImmediate)
         } catch {
-            print("Error creating haptic engine: \(error)")
+//            print("Error creating haptic engine: \(error)")
         }
     }
 
