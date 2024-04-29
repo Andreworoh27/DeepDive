@@ -9,6 +9,7 @@ import CoreHaptics
 
 class HapticUtils {
     static var engine: CHHapticEngine?
+    static var hapticQueue = DispatchQueue(label: "HapticQueue")
 
     static func runHaptic() {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
@@ -44,8 +45,26 @@ class HapticUtils {
         }
     }
     
-    static func runHapticOnBackgroundThreadwithinSeconds() {
+    static func runHapticOnHitShark() {
         DispatchQueue.global().async {
+            runHaptic()
+            usleep(200000) // Sleep for 0.5 seconds (500,000 microseconds)
+            runHaptic()
+        }
+    }
+    
+    static func runHapticOnHitBomb() {
+        DispatchQueue.global().async {
+            runHaptic()
+            usleep(200000) // Sleep for 0.5 seconds (500,000 microseconds)
+            runHaptic()
+            usleep(200000)
+            runHaptic()
+        }
+    }
+    
+    static func runHapticOnBackgroundThreadwithinSeconds() {
+        hapticQueue.async {
             runHaptic()
             usleep(500000) // Sleep for 0.5 seconds (500,000 microseconds)
             runHaptic()
