@@ -40,6 +40,9 @@ class GameScene: SKScene{
     var portalSpawn : Bool = false
     var bombCount : Int = 0
     
+    var userEnteredThePortal: Bool = false
+    @Published var gameFinish: Bool = false
+    
     func initializeObjects(){
         //testing nodes
         sceneWidth = SKLabelNode(text: "width : \(size.width)")
@@ -56,7 +59,7 @@ class GameScene: SKScene{
         mapNode.position = CGPoint(x: 0, y: 0)
         
         // init Starting Location
-        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1) + 100)
 //        initLocation = CGPoint(x: 0, y: mapNode.position.y)
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
@@ -117,11 +120,10 @@ class GameScene: SKScene{
         physicsWorld.contactDelegate = self
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
-        
-        self.movePlayer(dx: location.x, dy: location.y)
+        movePlayer(dx: location.x, dy: location.y)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -202,14 +204,19 @@ class GameScene: SKScene{
         
         movePlayer(dx: gyro.x, dy: gyro.y)
         
-        if portalNode != nil {
-            if(isInPortalFrame(portalNode: portalNode, objectNode: playerNode)){
-                print("Player Inside Portal")
-            }
-        }
+//        if portalNode != nil {
+//            if(isPlayerAtTheMiddleOfThePortal(portalNode: portalNode, objectNode: playerNode)){
+//                throwPlayerInsidePortalEvent()
+//            }
+//        }
     }
     
     func movePlayer(dx: CGFloat, dy: CGFloat) {
+        // if user enter the portal, user can't move
+        if userEnteredThePortal == true {
+            return
+        }
+        
         // limit gyro movement so that it won't move very fast
         var movementX = dx
         if movementX < -0.5 {
@@ -370,6 +377,15 @@ class GameScene: SKScene{
         bombCount = 0
     }
     
+    func removeAllSharks(){
+        for node in self.children {
+            // check if the node is a shark
+            if let sharkNode = node as? SKSpriteNode, sharkNode.name == "Shark" {
+                sharkNode.removeFromParent()
+            }
+        }
+    }
+    
     // for counting oxigen decreasse in section 1
     func oxigenSection1(){
         oxygenDecreaseInterval = 1.5
@@ -390,22 +406,34 @@ class GameScene: SKScene{
     }
     
     func playerCollideWithObject(player: SKSpriteNode, object: SKSpriteNode) {
+        if object.name == "Portal" {
+            print("Player collied with portal")
+            throwPlayerInsidePortalEvent()
+            return
+        }
+        
         if object.name == "Bomb"{
             object.removeFromParent()
 //            print("Hit Bomb")
             bombCount -= 1
             
             // logic when hit bomb
-            HapticUtils.runHapticOnHitBomb()
-            currentOxygenLevel -= 50
+            if userEnteredThePortal == false {
+                HapticUtils.runHapticOnHitBomb()
+                currentOxygenLevel -= 50
+            }
+
         }
         else if object.name == "Shark"{
 //            print("Hit Shark")
             
             // logic when hit shark
-            HapticUtils.runHapticOnHitShark()
-            currentOxygenLevel -= 25
+            if userEnteredThePortal == false {
+                HapticUtils.runHapticOnHitShark()
+                currentOxygenLevel -= 25
+            }
         }
+        
         
         animateGettingHurt()
         
@@ -415,9 +443,16 @@ class GameScene: SKScene{
 //        print("trigger spawn portal")
         // Create the portal node
         portalNode = SKSpriteNode(imageNamed: "Portal 1")
-        portalNode.size = CGSize(width: 350, height: 450)
+        portalNode.name = "Portal"
+        portalNode.size = CGSize(width: 150, height: 250)
         
         portalNode.position = generatePortalPosition(portalNode: portalNode, section3LimitNode: section3LimitNode)
+        //setup player physics
+        portalNode.physicsBody = SKPhysicsBody(rectangleOf: portalNode.size)
+        portalNode.physicsBody?.isDynamic = true
+        portalNode.physicsBody?.categoryBitMask = PhysicsCategory.bomb
+        portalNode.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        portalNode.physicsBody?.collisionBitMask = PhysicsCategory.none
         
         addChild(portalNode)
         
@@ -435,30 +470,6 @@ class GameScene: SKScene{
         
         // Apply the animation to the portal node
         portalNode.run(SKAction.repeatForever(animatePortalAction),withKey: "PortalAnimation")
-    }
-}
-
-extension GameScene: SKPhysicsContactDelegate {
-    func didBegin(_ contact: SKPhysicsContact) {
-        // get collided objects
-        var firstBody: SKPhysicsBody
-        var secondBody: SKPhysicsBody
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-            firstBody = contact.bodyA
-            secondBody = contact.bodyB
-        } else {
-            firstBody = contact.bodyB
-            secondBody = contact.bodyA
-        }
-        
-        // define the collided object
-        if ((firstBody.categoryBitMask & PhysicsCategory.player != 0) &&
-            (secondBody.categoryBitMask & PhysicsCategory.player == 0)) {
-            if let player = firstBody.node as? SKSpriteNode,
-               let object = secondBody.node as? SKSpriteNode {
-                playerCollideWithObject(player: player, object: object)
-            }
-        }
     }
     
     func runHapticOnBackgroundScene(_ currentTime: TimeInterval) {
@@ -490,7 +501,7 @@ extension GameScene: SKPhysicsContactDelegate {
             lastSavedOxygenTime = currentTime
         }
         else {
-            if abs(lastSavedOxygenTime - currentTime) >= oxygenDecreaseInterval {
+            if abs(lastSavedOxygenTime - currentTime) >= oxygenDecreaseInterval && userEnteredThePortal == false {
                 if currentOxygenLevel > 0 {
                     addBubble()
                     currentOxygenLevel -= 1
@@ -532,10 +543,77 @@ extension GameScene: SKPhysicsContactDelegate {
         playerNode.run(sequenceAction)
     }
     
+    func animateEnterPortal() {
+        let spiralPath = UIBezierPath()
+        spiralPath.move(to: playerNode.position)
+        
+        let portalCenter = portalNode.position
+        let radius = portalNode.size.width / 2
+        var spiralRadius = radius * 1
+        let spiralAngle = CGFloat.pi * 2
+        
+        for i in 0...30 {
+            let angle = spiralAngle * CGFloat(i) / 45
+            let x = portalCenter.x + cos(angle) * spiralRadius
+            let y = portalCenter.y + sin(angle) * spiralRadius
+            spiralPath.addLine(to: CGPoint(x: x, y: y))
+            spiralRadius *= 0.9
+        }
+        
+        spiralPath.addLine(to: portalCenter)
+        
+        let followPathAction = SKAction.follow(spiralPath.cgPath, asOffset: false, orientToPath: true, duration: 2)
+        let fadeOutAction = SKAction.fadeOut(withDuration: 2)
+        let removeAction = SKAction.removeFromParent()
+        let setGameToFinishState = SKAction.run {
+            self.gameFinish = true
+            print("Game finish? \(self.gameFinish)")
+        }
+        
+        // animation sequence
+        let sequenceAction = SKAction.sequence([followPathAction, fadeOutAction, removeAction, setGameToFinishState])
+        playerNode.run(sequenceAction)
+        
+    }
+    
     func throwGameOverEvent(){
         playerNode.position = initLocation
         playerNode.zRotation = 0
         currentOxygenLevel = 100
     }
     
+    func throwPlayerInsidePortalEvent(){
+        cameraNode.position = portalNode.position
+        userEnteredThePortal = true
+        sharkTraps = false
+        removeBombsFromSection3()
+        removeAllSharks()
+        
+        animateEnterPortal()
+    }
+    
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        // get collided objects
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        // define the collided object
+        if ((firstBody.categoryBitMask & PhysicsCategory.player != 0) &&
+            (secondBody.categoryBitMask & PhysicsCategory.player == 0)) {
+            if let player = firstBody.node as? SKSpriteNode,
+               let object = secondBody.node as? SKSpriteNode {
+                playerCollideWithObject(player: player, object: object)
+            }
+        }
+    }
 }

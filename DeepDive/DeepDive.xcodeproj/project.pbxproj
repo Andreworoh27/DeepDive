@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3A2755142BDE7B9300F47882 /* OxygenBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755132BDE7B9300F47882 /* OxygenBar.swift */; };
+		3A2755472BDFF1B700F47882 /* EndingScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755462BDFF1B700F47882 /* EndingScene.swift */; };
+		3A2755492BDFF1F300F47882 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755482BDFF1F300F47882 /* SoundManager.swift */; };
 		3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A02BDB78940033F7FE /* GameScene.swift */; };
 		3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A22BDB793D0033F7FE /* GyroManager.swift */; };
 		AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		3A2755132BDE7B9300F47882 /* OxygenBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenBar.swift; sourceTree = "<group>"; };
+		3A2755462BDFF1B700F47882 /* EndingScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndingScene.swift; sourceTree = "<group>"; };
+		3A2755482BDFF1F300F47882 /* SoundManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		3A92D4A02BDB78940033F7FE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		3A92D4A22BDB793D0033F7FE /* GyroManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroManager.swift; sourceTree = "<group>"; };
 		AC3F16732BDB67BC000C8020 /* DeepDive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeepDive.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,6 +61,7 @@
 		3A92D49F2BDB78870033F7FE /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				3A2755482BDFF1F300F47882 /* SoundManager.swift */,
 				AC4120472BDF491100820A05 /* Haptic.swift */,
 				3A92D4A22BDB793D0033F7FE /* GyroManager.swift */,
 				AC4714002BDC0D9F007CD871 /* Constant.swift */,
@@ -120,6 +125,7 @@
 				3A92D4A02BDB78940033F7FE /* GameScene.swift */,
 				ACD8979A2BDD4E7A001F4D06 /* CollisionObjects.swift */,
 				3A2755132BDE7B9300F47882 /* OxygenBar.swift */,
+				3A2755462BDFF1B700F47882 /* EndingScene.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -197,6 +203,7 @@
 				AC4120502BDF491A00820A05 /* FrameView.swift in Sources */,
 				AC41204E2BDF491A00820A05 /* StoryView.swift in Sources */,
 				3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */,
+				3A2755472BDFF1B700F47882 /* EndingScene.swift in Sources */,
 				3A2755142BDE7B9300F47882 /* OxygenBar.swift in Sources */,
 				3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */,
 				AC4120512BDF491A00820A05 /* ScreenshotView.swift in Sources */,
@@ -207,6 +214,7 @@
 				AC4714012BDC0D9F007CD871 /* Constant.swift in Sources */,
 				AC3F16792BDB67BC000C8020 /* ContentView.swift in Sources */,
 				AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */,
+				3A2755492BDFF1F300F47882 /* SoundManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
