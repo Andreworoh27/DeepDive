@@ -32,7 +32,7 @@ class GameScene: SKScene{
     var lastSavedOxygenTime: TimeInterval!
     
     var lastHapticTime: TimeInterval!
-        var intervalHapticDelay: CGFloat!
+    var intervalHapticDelay: CGFloat!
     
     var sharkTraps : Bool = false
     var bombTraps : Bool = false
@@ -54,11 +54,9 @@ class GameScene: SKScene{
         // map nodes
         mapNode = SKSpriteNode(texture: SKTexture(imageNamed: "Map"))
         mapNode.position = CGPoint(x: 0, y: 0)
-        mapNode.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
-        mapNode.physicsBody?.contactTestBitMask = 1
         
         // init Starting Location
-//        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
+        initLocation = CGPoint(x: 0, y: mapNode.position.y + (mapNode.size.height/2) - (mapNode.size.height * 0.1))
         initLocation = CGPoint(x: 0, y: mapNode.position.y)
         
         playerNode = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 50, height: 100))
@@ -111,7 +109,6 @@ class GameScene: SKScene{
     override func didMove(to view: SKView) {
         initializeObjects()
         self.camera = cameraNode
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: mapNode.frame)
         self.physicsWorld.contactDelegate = self
         backgroundColor = SKColor.blueSky
         
@@ -204,6 +201,10 @@ class GameScene: SKScene{
         }
         
         movePlayer(dx: gyro.x, dy: gyro.y)
+        
+        if(isInPortalFrame(portalNode: portalNode, objectNode: playerNode)){
+            print("Player Inside Portal")
+        }
     }
     
     func movePlayer(dx: CGFloat, dy: CGFloat) {
@@ -327,7 +328,7 @@ class GameScene: SKScene{
             x : bombXPosition,
             y : bombYPosition)
         
-        while(isBombInPortalFrame(portalNode: portalNode, bombNode: bombNode)){
+        while(isInPortalFrame(portalNode: portalNode, objectNode: bombNode)){
             let bombYPosition = random(
                 min: section3LimitNode.position.y - bombNode.size.height,
                 max: mapBottomSide + bombNode.size.height)

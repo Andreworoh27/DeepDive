@@ -35,7 +35,7 @@ func generatePortalPosition(portalNode : SKSpriteNode, section3LimitNode : SKSpr
     
 }
 
-func isBombInPortalFrame(portalNode : SKSpriteNode, bombNode : SKSpriteNode) -> Bool{
+func isInPortalFrame(portalNode : SKSpriteNode, objectNode : SKSpriteNode) -> Bool{
 //    print("portal minX : \(abs(portalNode.frame.minX))")
 //    print("portal maxX : \(abs(portalNode.frame.maxX))")
 //    print("portal minY : \(abs(portalNode.frame.minY))")
@@ -47,10 +47,8 @@ func isBombInPortalFrame(portalNode : SKSpriteNode, bombNode : SKSpriteNode) -> 
 //    print("portal size : \(portalNode.size)\n\n")
 //    
 //    print("bomb : \(bombNode.position)")
-    if (( abs(bombNode.position.x) >= (abs(portalNode.frame.minX) - 100) && abs(bombNode.position.x) <= (abs(portalNode.frame.maxX)) + 100) && ( abs(bombNode.position.y) >= (abs(portalNode.frame.minY) - 100) && abs(bombNode.position.y) <= (abs(portalNode.frame.maxY)) + 100)){
+    if (( abs(objectNode.position.x) >= (abs(portalNode.frame.minX) - 350) && abs(objectNode.position.x) <= (abs(portalNode.frame.maxX)) + 350) && ( abs(objectNode.position.y) >= (abs(portalNode.frame.minY) - 450) && abs(objectNode.position.y) <= (abs(portalNode.frame.maxY)) + 450)){
         return true
     }
-    
-    
     return false
 }
