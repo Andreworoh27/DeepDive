@@ -125,9 +125,8 @@ class GameScene: SKScene{
     }
     
     override func update(_ currentTime: TimeInterval) {
-        runHapticOnBackgroundScene(currentTime)
+//        runHapticOnBackgroundScene(currentTime)
         decreaseOxygen(currentTime)
-        
         
         //zone checker for section 1
         if(playerNode.position.y > section2LimitNode.position.y){
@@ -209,7 +208,7 @@ class GameScene: SKScene{
         
         var movementY = dy
         if movementY < 0 {
-            movementY *= 3
+            movementY *= 2
         }
         else if movementY > 0.3 {
             movementY = 0.3
@@ -233,6 +232,22 @@ class GameScene: SKScene{
         }
         
         cameraNode.position = playerNode.position
+    }
+    
+    func addBubble(){
+        let bubbleNode = SKSpriteNode(imageNamed: "Bubble")
+        bubbleNode.size = CGSize(width: 20, height: 20)
+        bubbleNode.name = "Bubble"
+        bubbleNode.physicsBody?.isDynamic = false
+        
+        bubbleNode.position = playerNode.position
+        
+        let intervalDuration = SKAction.wait(forDuration: 3)
+        let actionDissapear = SKAction.removeFromParent()
+        
+        addChild(bubbleNode)
+        bubbleNode.run(SKAction.sequence([intervalDuration, actionDissapear]))
+        HapticUtils.runHapticOnBackgroundThread()
     }
     
     func addSharks(){
@@ -404,6 +419,7 @@ extension GameScene: SKPhysicsContactDelegate {
        
     }
     
+    
     func initOxygen(){
         currentOxygenLevel = 100
         maxOxygenLevel = 100
@@ -421,6 +437,7 @@ extension GameScene: SKPhysicsContactDelegate {
         else {
             if abs(lastSavedOxygenTime - currentTime) >= oxygenDecreaseInterval {
                 if currentOxygenLevel > 0 {
+                    addBubble()
                     currentOxygenLevel -= 1
                     lastSavedOxygenTime = nil
                 }

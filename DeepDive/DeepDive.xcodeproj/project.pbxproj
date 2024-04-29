@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A2755142BDE7B9300F47882 /* OxygenBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755132BDE7B9300F47882 /* OxygenBar.swift */; };
+		3A2755432BDF52CF00F47882 /* Haptic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755422BDF52CF00F47882 /* Haptic.swift */; };
 		3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A02BDB78940033F7FE /* GameScene.swift */; };
 		3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A22BDB793D0033F7FE /* GyroManager.swift */; };
 		AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		3A2755132BDE7B9300F47882 /* OxygenBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxygenBar.swift; sourceTree = "<group>"; };
+		3A2755422BDF52CF00F47882 /* Haptic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Haptic.swift; sourceTree = "<group>"; };
 		3A92D4A02BDB78940033F7FE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		3A92D4A22BDB793D0033F7FE /* GyroManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroManager.swift; sourceTree = "<group>"; };
 		AC3F16732BDB67BC000C8020 /* DeepDive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeepDive.app; sourceTree = BUILT_PRODUCTS_DIR; };
