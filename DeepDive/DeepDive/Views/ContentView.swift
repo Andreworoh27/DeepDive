@@ -40,7 +40,8 @@ struct ContentView: View {
                     .padding(.top, 50)
             }
             .navigationDestination(isPresented: $isGameFinished) {
-                EndingScene(isGameFinished: $isGameFinished)
+//                ScreenshotView(isGameFinished: $isGameFinished)
+                ScreenshotView()
             }
             .onAppear(){
                 if isGameFinished == true {
