@@ -27,6 +27,9 @@ class GameScene: SKScene{
     var oxygenDecreaseInterval: CGFloat!
     var lastSavedOxygenTime: TimeInterval!
     
+    var lastHapticTime: TimeInterval!
+    var intervalHapticDelay: CGFloat!
+    
     var initLocation: CGPoint!
     
     var gyro = GyroManager.shared
@@ -325,17 +328,20 @@ class GameScene: SKScene{
     // for counting oxigen decreasse in section 1
     func oxigenSection1(){
         oxygenDecreaseInterval = 1.5
+        intervalHapticDelay = 10.0
     }
     
     // for counting oxigen decreasse in section 2
     func oxigenSection2(){
         oxygenDecreaseInterval = 1
+        intervalHapticDelay = 5.0
 
     }
     
     // for counting oxigen decreasse in section 3
     func oxigenSection3(){
         oxygenDecreaseInterval = 0.5
+        intervalHapticDelay = 3.0
     }
     
     func playerCollideWithObject(player: SKSpriteNode, object: SKSpriteNode) {
@@ -344,16 +350,19 @@ class GameScene: SKScene{
             print("Hit Bomb")
             
             // logic when hit bomb
+            HapticUtils.runHapticOnHitBomb()
             currentOxygenLevel -= 50
         }
         else if object.name == "Shark"{
             print("Hit Shark")
             
             // logic when hit shark
+            HapticUtils.runHapticOnHitShark()
             currentOxygenLevel -= 25
         }
         
         animateGettingHurt()
+        
     }
 }
 
@@ -378,6 +387,19 @@ extension GameScene: SKPhysicsContactDelegate {
                 playerCollideWithObject(player: player, object: object)
             }
         }
+    }
+    
+    func runHapticOnBackgroundScene(_ currentTime: TimeInterval) {
+        if lastHapticTime == nil {
+            lastHapticTime = currentTime
+        }
+        
+        
+        else if abs(lastHapticTime - currentTime) >= intervalHapticDelay {
+            HapticUtils.runHapticOnBackgroundThread()
+            lastHapticTime = nil
+        }
+       
     }
     
     func initOxygen(){
