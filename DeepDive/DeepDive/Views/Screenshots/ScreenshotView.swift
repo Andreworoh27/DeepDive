@@ -16,7 +16,7 @@ struct ScreenshotView: View {
         ZStack {
             if (!isPresentingNextView) {
                 
-                Image("page3").resizable()
+                Image("treasure").resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
                 FrameView(image: model.frame)
@@ -76,10 +76,10 @@ struct ScreenshotView: View {
                     }
                     
                     
-                }
+                }.navigationBarBackButtonHidden(true)
                 
             }
-        }
+        }.navigationBarBackButtonHidden(true)
         
     }
     
@@ -110,7 +110,7 @@ struct NextView: View {
                 let _ = print("no screenshot")
                 Text("No screenshot available")
             }
-        }}
+        }.navigationBarBackButtonHidden(true)}
 }
 
 struct Screenshot_Preview: PreviewProvider {
