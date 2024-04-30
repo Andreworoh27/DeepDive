@@ -40,18 +40,24 @@ class FrameHandler: NSObject, ObservableObject {
     
     func setupCaptureSession() {
         let videoOutput = AVCaptureVideoDataOutput()
-        
+
         guard permissionGranted else { return }
         guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front) else { return }
         guard let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
         guard captureSession.canAddInput(videoDeviceInput) else { return }
         captureSession.addInput(videoDeviceInput)
-        
+
         videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "sampleBufferQueue"))
         captureSession.addOutput(videoOutput)
-        
-        videoOutput.connection(with: .video)?.videoOrientation = .portrait
+
+        if let connection = videoOutput.connection(with: .video) {
+            connection.videoOrientation = .portrait
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = false // Set mirroring to false
+            }
+        }
     }
+
 }
 
 
