@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var isButtonPressed: Bool = false
     
     @State private var currentOxygen: CGFloat = 100
+    @State private var isGameFinished: Bool = false
     
     var gameScene: GameScene
     init(){
@@ -23,7 +24,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
+        NavigationStack {
             ZStack(alignment: .topTrailing){
 //                Text("Gyro Status: \(gyroInfo)  \(gyro.x) \(gyro.y)")
 //                Text("Player position x: \(gameScene.playerNode.position.x) y: \(gameScene.playerNode.position.y)")
@@ -31,9 +32,21 @@ struct ContentView: View {
                     .onReceive(gameScene.$currentOxygenLevel, perform: { _ in
                         currentOxygen = gameScene.currentOxygenLevel
                     })
+                    .onReceive(gameScene.$gameFinish, perform: { _ in
+                        isGameFinished = true
+                    })
                 OxygenBar(current: $currentOxygen, max: .constant(100))
                     .padding(.trailing, 30)
                     .padding(.top, 50)
+            }
+            .navigationDestination(isPresented: $isGameFinished) {
+//                ScreenshotView(isGameFinished: $isGameFinished)
+                ScreenshotView()
+            }
+            .onAppear(){
+                if isGameFinished == true {
+                    isGameFinished = false
+                }
             }
         }
         .ignoresSafeArea()
