@@ -12,6 +12,7 @@
 		3A2755492BDFF1F300F47882 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2755482BDFF1F300F47882 /* SoundManager.swift */; };
 		3A92D4A12BDB78940033F7FE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A02BDB78940033F7FE /* GameScene.swift */; };
 		3A92D4A32BDB793D0033F7FE /* GyroManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A92D4A22BDB793D0033F7FE /* GyroManager.swift */; };
+		9D74C6A82BE0B79E003BAD5C /* underwater.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9D74C6A72BE0B79E003BAD5C /* underwater.mp3 */; };
 		AC3F16772BDB67BC000C8020 /* DeepDiveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */; };
 		AC3F16792BDB67BC000C8020 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3F16782BDB67BC000C8020 /* ContentView.swift */; };
 		AC3F167B2BDB67BE000C8020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC3F167A2BDB67BE000C8020 /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 		3A2755482BDFF1F300F47882 /* SoundManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		3A92D4A02BDB78940033F7FE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		3A92D4A22BDB793D0033F7FE /* GyroManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroManager.swift; sourceTree = "<group>"; };
+		9D74C6A72BE0B79E003BAD5C /* underwater.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = underwater.mp3; sourceTree = "<group>"; };
 		AC3F16732BDB67BC000C8020 /* DeepDive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeepDive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepDiveApp.swift; sourceTree = "<group>"; };
 		AC3F16782BDB67BC000C8020 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 		AC3F16752BDB67BC000C8020 /* DeepDive */ = {
 			isa = PBXGroup;
 			children = (
+				9D74C6A72BE0B79E003BAD5C /* underwater.mp3 */,
 				AC4713FF2BDC0D8C007CD871 /* Views */,
 				3A92D49F2BDB78870033F7FE /* Utils */,
 				AC3F16762BDB67BC000C8020 /* DeepDiveApp.swift */,
@@ -188,6 +191,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D74C6A82BE0B79E003BAD5C /* underwater.mp3 in Resources */,
 				AC3F167E2BDB67BE000C8020 /* Preview Assets.xcassets in Resources */,
 				AC3F167B2BDB67BE000C8020 /* Assets.xcassets in Resources */,
 			);
@@ -348,7 +352,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DeepDive/Preview Content\"";
-				DEVELOPMENT_TEAM = RQC43WJC4G;
+				DEVELOPMENT_TEAM = HQSPL9G29Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for preview";
@@ -378,7 +382,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DeepDive/Preview Content\"";
-				DEVELOPMENT_TEAM = RQC43WJC4G;
+				DEVELOPMENT_TEAM = HQSPL9G29Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required for preview";

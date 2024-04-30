@@ -19,6 +19,7 @@ struct ContentView: View {
     
     var gameScene: GameScene
     init(){
+        SoundManager.playSound("underwater")
         gameScene = GameScene(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         gameScene.currentOxygenLevel = 100
     }
