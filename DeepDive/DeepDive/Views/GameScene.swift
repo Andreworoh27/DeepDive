@@ -79,7 +79,7 @@ class GameScene: SKScene{
         
         cameraNode = SKCameraNode()
         cameraNode.position = CGPoint(x: playerNode.position.x, y: playerNode.position.y)
-        cameraNode.setScale(1.5)
+        cameraNode.setScale(2)
         
         section2LimitNode = SKSpriteNode(color: UIColor.red, size: CGSize(width: mapNode.size.width, height: 10))
         section2LimitNode.position = CGPoint(x: 0, y: section2)
@@ -127,12 +127,6 @@ class GameScene: SKScene{
         physicsWorld.contactDelegate = self
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        movePlayer(dx: location.x, dy: location.y)
-    }
-    
     override func update(_ currentTime: TimeInterval) {
 //        runHapticOnBackgroundScene(currentTime)
         decreaseOxygen(currentTime)
@@ -171,7 +165,7 @@ class GameScene: SKScene{
                     self.addBombs()
                 }
                 
-                let repeatAction = SKAction.repeat(addBombAction, count: 30)
+                let repeatAction = SKAction.repeat(addBombAction, count: 20)
                 self.run(repeatAction)
                 
             }
