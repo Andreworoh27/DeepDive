@@ -25,6 +25,9 @@ class GameScene: SKScene{
     var initLocation: CGPoint!
     var gyro = GyroManager.shared
     
+    var sharkSpawnInterval: TimeInterval! = 0.5
+    var lastSavedSharkTime: TimeInterval!
+    
     var oxygenBarNode: SKSpriteNode!
     @Published var currentOxygenLevel: CGFloat!
     var maxOxygenLevel: CGFloat!
@@ -92,6 +95,9 @@ class GameScene: SKScene{
         yLimiter = SKSpriteNode(color: UIColor.cyan, size: CGSize(width: 10, height: mapNode.size.height))
         yLimiter.position = CGPoint(x: 0, y: 0)
         
+        sharkTraps = true
+        sharkSpawnInterval = 1
+        
         initOxygen()
         
         addChild(mapNode)
@@ -130,24 +136,13 @@ class GameScene: SKScene{
 //        runHapticOnBackgroundScene(currentTime)
         decreaseOxygen(currentTime)
         
+        // spawn shark
+        if(sharkTraps){
+            spawnSharkWithinInterval(currentTime)
+        }
+        
         //zone checker for section 1
         if(playerNode.position.y > section2LimitNode.position.y){
-            // turn on shark trap
-            if(!sharkTraps){
-                sharkInSection2 = true
-                sharkTraps = true
-//                print("Shark Traps on : \(sharkTraps.description)")
-                
-                // define shark spawn interval
-                let intervalDuration = SKAction.wait(forDuration: 1.5)
-                let addSharkAction = SKAction.run {
-                    self.addSharks()
-                }
-                let sequenceAction = SKAction.sequence([intervalDuration, addSharkAction])
-                let repeatAction = SKAction.repeatForever(sequenceAction)
-                self.run(repeatAction, withKey: "SharkSpawnAction")
-            }
-            
             // turn of bomb trap
             if(bombTraps){
                 bombTraps = false
@@ -161,7 +156,6 @@ class GameScene: SKScene{
         
         // zone checker for section 2
         if(playerNode.position.y <= section2LimitNode.position.y){
-            sharkInSection2 = true
             if(!portalSpawn) {
                 spawnPortal()
                 portalSpawn = true
@@ -193,8 +187,6 @@ class GameScene: SKScene{
         
         // zone checker for section 3
         if(playerNode.position.y <= section3LimitNode.position.y){
-            sharkInSection2 = false
-            
             // count oxigen
             oxigenSection3()
         }
@@ -267,6 +259,17 @@ class GameScene: SKScene{
         addChild(bubbleNode)
         bubbleNode.run(SKAction.sequence([intervalDuration, actionDissapear]))
         HapticUtils.runHapticOnBackgroundThread()
+    }
+    
+    func spawnSharkWithinInterval(_ currentTime: TimeInterval){
+        if lastSavedSharkTime == nil {
+            lastSavedSharkTime = currentTime
+        }
+        else if abs(lastSavedSharkTime - currentTime) >= sharkSpawnInterval {
+            self.addSharks()
+//            print("Shark spawned")
+            lastSavedSharkTime = nil
+        }
     }
     
     func addSharks(){
