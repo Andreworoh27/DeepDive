@@ -70,6 +70,7 @@ class GameScene: SKScene{
         //        playerNode.position = CGPoint(x: 0, y: 0)
         //setup player physics
         playerNode.physicsBody = SKPhysicsBody(rectangleOf: playerNode.size)
+        playerNode.texture = SKTexture(imageNamed: "diverDefault")
         playerNode.physicsBody?.isDynamic = true
         playerNode.physicsBody?.categoryBitMask = PhysicsCategory.player
         playerNode.physicsBody?.contactTestBitMask = PhysicsCategory.shark | PhysicsCategory.bomb
@@ -535,12 +536,12 @@ class GameScene: SKScene{
     func animateGettingHurt(){
         let delayAction = SKAction.wait(forDuration: 0.1)
         let animation1 = SKAction.run {
-            self.playerNode.color = .red
+            self.playerNode.texture = SKTexture(imageNamed: "diverHit")
             self.playerNode.setScale(1.1)
         }
         let animation2 = SKAction.run {
             self.playerNode.setScale(1)
-            self.playerNode.color = .gray
+            self.playerNode.texture = SKTexture(imageNamed: "diverDefault")
         }
         let sequenceAction = SKAction.sequence([animation1, delayAction, animation2])
         playerNode.run(sequenceAction)
